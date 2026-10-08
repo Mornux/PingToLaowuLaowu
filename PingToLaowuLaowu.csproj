@@ -1,0 +1,38 @@
+<Project Sdk="Godot.NET.Sdk/4.5.1">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>13.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <Sts2Dir Condition="'$(Sts2Dir)' == ''">F:\SteamLibrary\steamapps\common\Slay the Spire 2</Sts2Dir>
+    <Sts2DataDir>$(Sts2Dir)\data_sts2_windows_x86_64</Sts2DataDir>
+    <GodotExe Condition="'$(GodotExe)' == ''">D:\Godot_v4.5.1-stable_mono_win64\Godot_v4.5.1-stable_mono_win64_console.exe</GodotExe>
+    <RitsuLibDir Condition="'$(RitsuLibDir)' == ''">D:\ProjectTwilight\STS2-RitsuLib</RitsuLibDir>
+    <RitsuLibReferenceTarget>0.111.0</RitsuLibReferenceTarget>
+    <ModOutputDir>$(MSBuildProjectDirectory)\build</ModOutputDir>
+    <ModDeployDir>$(ModOutputDir)\$(MSBuildProjectName)</ModDeployDir>
+    <DefaultItemExcludes>$(DefaultItemExcludes);build\**;tools\**</DefaultItemExcludes>
+  </PropertyGroup>
+  <Import Project="$(RitsuLibDir)\RitsuLib.References.props" />
+  <ItemGroup>
+    <Reference Include="sts2" HintPath="$(Sts2DataDir)\sts2.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(Sts2DataDir)\0Harmony.dll" Private="false" />
+  </ItemGroup>
+  <Target Name="DeployMod" AfterTargets="Build" Condition="'$(DeployMod)' != 'false'">
+    <ItemGroup>
+      <RitsuLibDeployFiles Include="$(RitsuLibDir)\**\*" />
+      <LaowuSoundFiles Include="$(MSBuildProjectDirectory)\PingToLaowuLaowu\LaowuSounds\*.mp3" />
+    </ItemGroup>
+    <MakeDir Directories="$(ModDeployDir)" />
+    <WriteLinesToFile File="$(ModOutputDir)\.gdignore" Lines="# Generated output" Overwrite="true" />
+    <Copy SourceFiles="$(TargetPath);$(MSBuildProjectDirectory)\$(MSBuildProjectName).json" DestinationFolder="$(ModDeployDir)" />
+    <Copy SourceFiles="@(LaowuSoundFiles)" DestinationFolder="$(ModDeployDir)\LaowuSounds" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(RitsuLibDeployFiles)" DestinationFiles="@(RitsuLibDeployFiles->'$(Sts2Dir)\mods\STS2-RitsuLib\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="ExportPck" DependsOnTargets="Build">
+    <MakeDir Directories="$(ModDeployDir)" />
+    <Exec Command="&quot;$(GodotExe)&quot; --headless --path &quot;$(MSBuildProjectDirectory)&quot; --export-pack &quot;Windows Desktop&quot; &quot;$(ModDeployDir)\$(MSBuildProjectName).pck&quot;" EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1" />
+  </Target>
+</Project>
