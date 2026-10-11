@@ -2,7 +2,7 @@
   "id": "PingToLaowuLaowu",
   "name": "Ping to Laowu Laowu",
   "author": "Mornux",
-  "description": "催促队友时一起老吴老吴叫\nPing your teammates with cat meows that sound like 'Laowu'.",
+  "description": "催促队友时一起老吴老吴叫。\nPing your teammates with cat meows that sound like “Laowu.” Sound clips are sourced from cat meme videos online.",
   "version": "0.2.0",
   "min_game_version": "0.0.0",
   "has_pck": true,
