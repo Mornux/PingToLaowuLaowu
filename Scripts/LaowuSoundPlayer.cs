@@ -1,4 +1,3 @@
-using System.IO;
 using Godot;
 
 namespace PingToLaowuLaowu.Scripts;
@@ -29,9 +28,7 @@ internal static class LaowuSoundPlayer
                 int index = System.Random.Shared.Next(candidates.Count);
                 string path = candidates[index];
                 candidates.RemoveAt(index);
-                AudioStream? stream = path.StartsWith("res://", StringComparison.Ordinal)
-                    ? ResourceLoader.Load<AudioStream>(path)
-                    : AudioStreamMP3.LoadFromFile(path);
+                AudioStream? stream = ResourceLoader.Load<AudioStream>(path);
                 if (stream == null || stream.GetLength() <= 0)
                     continue;
 
@@ -39,6 +36,7 @@ internal static class LaowuSoundPlayer
                 {
                     Name = "LaowuPingSound",
                     Stream = stream,
+                    VolumeDb = 20f,
                     Bus = AudioServer.GetBusIndex("SFX") >= 0 ? "SFX" : "Master"
                 };
                 player.Finished += player.QueueFree;
@@ -57,17 +55,7 @@ internal static class LaowuSoundPlayer
 
     private static string[] FindSounds()
     {
-        string assemblyDirectory = Path.GetDirectoryName(typeof(Entry).Assembly.Location) ?? "";
-        string looseDirectory = Path.Combine(assemblyDirectory, "LaowuSounds");
-        if (Directory.Exists(looseDirectory))
-        {
-            // Rescan so players can add/remove MP3 files without rebuilding the PCK.
-            return Directory.EnumerateFiles(looseDirectory)
-                .Where(path => Path.GetExtension(path).Equals(".mp3", StringComparison.OrdinalIgnoreCase))
-                .OrderBy(path => path, StringComparer.Ordinal).ToArray();
-        }
-
-        // Packed resources are a fallback when no loose folder is supplied.
+        // All sounds are imported resources bundled inside the mod PCK.
         return ResourceLoader.ListDirectory(ResourceDirectory)
             .Where(name => name.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
             .Distinct().OrderBy(name => name, StringComparer.Ordinal)

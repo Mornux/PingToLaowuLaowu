@@ -23,12 +23,10 @@
   <Target Name="DeployMod" AfterTargets="Build" Condition="'$(DeployMod)' != 'false'">
     <ItemGroup>
       <RitsuLibDeployFiles Include="$(RitsuLibDir)\**\*" />
-      <LaowuSoundFiles Include="$(MSBuildProjectDirectory)\PingToLaowuLaowu\LaowuSounds\*.mp3" />
     </ItemGroup>
     <MakeDir Directories="$(ModDeployDir)" />
     <WriteLinesToFile File="$(ModOutputDir)\.gdignore" Lines="# Generated output" Overwrite="true" />
     <Copy SourceFiles="$(TargetPath);$(MSBuildProjectDirectory)\$(MSBuildProjectName).json" DestinationFolder="$(ModDeployDir)" />
-    <Copy SourceFiles="@(LaowuSoundFiles)" DestinationFolder="$(ModDeployDir)\LaowuSounds" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(RitsuLibDeployFiles)" DestinationFiles="@(RitsuLibDeployFiles->'$(Sts2Dir)\mods\STS2-RitsuLib\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
   <Target Name="ExportPck" DependsOnTargets="Build">

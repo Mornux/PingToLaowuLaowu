@@ -2,9 +2,9 @@
   "id": "PingToLaowuLaowu",
   "name": "Ping to Laowu Laowu",
   "author": "Mornux",
-  "description": "Laowu Laowu",
-  "version": "0.1.0",
-  "min_game_version": "0.111.0",
+  "description": "催促队友时一起老吴老吴叫\nPing your teammates with cat meows that sound like 'Laowu'.",
+  "version": "0.2.0",
+  "min_game_version": "0.0.0",
   "has_pck": true,
   "has_dll": true,
   "dependencies": [
